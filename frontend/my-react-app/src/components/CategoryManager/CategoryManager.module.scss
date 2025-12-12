@@ -1,0 +1,120 @@
+@use '../../styles/variables.css';
+@use '../../styles/mixins.scss' as *;
+
+.manager {
+  .message {
+    @include section-base;
+    background: linear-gradient(135deg, #e6f7ff 0%, #d4edda 100%);
+    border-left: 4px solid var(--success-color);
+    color: var(--success-color);
+    margin-bottom: var(--spacing-xl);
+    @include flex-between;
+    @include fade-in-up;
+
+    .closeMessage {
+      @include button-reset;
+      font-size: 1.5rem;
+      color: var(--success-color);
+      opacity: 0.7;
+      transition: var(--transition-fast);
+
+      &:hover {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .addForm {
+    display: flex;
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+
+    input {
+      @include input-base;
+      flex: 1;
+    }
+
+    button {
+      @include button-primary;
+      white-space: nowrap;
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
+
+  .categoriesList {
+    h4 {
+      margin-top: 0;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .categoryItem {
+      margin-bottom: var(--spacing-md);
+
+      .editForm {
+        display: flex;
+        gap: var(--spacing-md);
+
+        input {
+          @include input-base;
+          flex: 1;
+        }
+
+        .saveBtn {
+          @include button-success;
+          padding: var(--spacing-md) var(--spacing-lg);
+        }
+
+        .cancelBtn {
+          @include button-secondary;
+          padding: var(--spacing-md) var(--spacing-lg);
+        }
+      }
+
+      .categoryContent {
+        @include flex-between;
+        @include card-base;
+        padding: var(--spacing-md) var(--spacing-lg);
+        background: var(--bg-white);
+
+        &:hover {
+          @include card-hover;
+        }
+
+        .categoryName {
+          font-weight: 600;
+          color: var(--text-primary);
+          font-size: 1.1rem;
+        }
+
+        .actions {
+          display: flex;
+          gap: var(--spacing-sm);
+
+          .editBtn {
+            @include button-secondary;
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 0.9rem;
+          }
+
+          .deleteBtn {
+            @include button-danger;
+            padding: var(--spacing-sm) var(--spacing-md);
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+}

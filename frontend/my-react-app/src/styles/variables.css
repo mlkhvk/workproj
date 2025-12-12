@@ -1,0 +1,57 @@
+:root {
+  /* Основные цвета */
+  --primary-color: #667eea;
+  --primary-dark: #5a67d8;
+  --primary-light: #a3bffa;
+  --secondary-color: #764ba2;
+  --accent-color: #48bb78;
+  --danger-color: #f56565;
+  --warning-color: #ffe68b;
+  --info-color: #4299e1;
+  --success-color: #28a745;
+
+  /* Текст */
+  --text-primary: #2d3748;
+  --text-secondary: #4a5568;
+  --text-muted: #718096;
+  --text-light: #a0aec0;
+
+  /* Фоны */
+  --bg-white: #ffffff;
+  --bg-light: #f7fafc;
+  --bg-gray: #e2e8f0;
+  --bg-dark: #1a202c;
+
+  /* Градиенты */
+  --gradient-primary: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  --gradient-success: linear-gradient(135deg, var(--success-color) 0%, #20c997 100%);
+  --gradient-danger: linear-gradient(135deg, var(--danger-color) 0%, #e53e3e 100%);
+  --gradient-warning: linear-gradient(135deg, var(--warning-color) 0%, #f9b87b 100%);
+  --gradient-info: linear-gradient(135deg, var(--info-color) 0%, #3182ce 100%);
+
+  /* Тени */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.15);
+  --shadow-xl: 0 25px 80px rgba(0, 0, 0, 0.3);
+
+  /* Радиусы */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 9999px;
+
+  /* Отступы */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+
+  /* Анимации */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+  --transition-bounce: cubic-bezier(0.4, 0, 0.2, 1);
+}

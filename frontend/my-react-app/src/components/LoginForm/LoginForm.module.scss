@@ -1,0 +1,67 @@
+@use '../../styles/variables.css';
+@use '../../styles/mixins.scss' as *;
+.panel {
+  @include card-base;
+  padding: var(--spacing-xl);
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--radius-lg);
+}
+
+.panel h2 {
+  text-align: center;
+  color: var(--text-primary);
+  margin-bottom: var(--spacing-lg);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.formGroup {
+  margin-bottom: 1.25rem;
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+}
+
+.formInput {
+  @include input-base;
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+}
+
+.btn {
+  @include button-base;
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  margin-top: 0.5rem;
+}
+
+.btnPrimary {
+  @include button-primary;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+  
+  &:disabled {
+    background: var(--text-light);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.error {
+  @include badge-danger;
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+  font-size: 0.9rem;
+  font-weight: 500;
+}

@@ -1,0 +1,317 @@
+@use '../../styles/variables.css';
+@use '../../styles/mixins.scss' as *;
+.panel {
+  .userGeneration {
+    @include section-warning;
+    margin-bottom: var(--spacing-xl);
+
+    h4 {
+      margin-top: 0;
+      color: var(--text-primary);
+    }
+
+    .generationControls {
+      display: flex;
+      gap: var(--spacing-lg);
+      align-items: center;
+      margin-bottom: var(--spacing-md);
+
+      .countControl {
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-md);
+        background-color: var(--bg-ligh);
+
+        label {
+          color: var(--bg-dark);
+          font-weight: 600;
+          font-size: 18px;
+        }
+
+        .countInput {
+          @include input-base;
+          width: 100px;
+          height: 45px;
+          text-align: center;
+        }
+      }
+
+      .generateBtn {
+        color: var(--bg-dark);
+        background-color: var(--bg-light);
+        white-space: nowrap; 
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .generationHint {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-style: italic;
+    }
+  }
+
+  .searchSection {
+    @include section-light;
+    margin-bottom: var(--spacing-xl);
+
+    h4 {
+      margin-top: 0;
+      color: var(--text-primary);
+    }
+
+    .searchContainer {
+      position: relative;
+      margin-bottom: var(--spacing-sm);
+
+      .searchInput {
+        @include input-base;
+        padding-right: 40px;
+      }
+
+      .clearSearchBtn {
+        @include button-reset;
+        position: absolute;
+        right: var(--spacing-md);
+        top: 50%;
+        transform: translateY(-50%);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        @include flex-center;
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        transition: var(--transition-fast);
+
+        &:hover {
+          background: var(--text-muted);
+          color: white;
+        }
+      }
+    }
+
+    .searchHint {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  }
+
+  .usersSection {
+    @include section-light;
+
+    h4 {
+      margin-top: 0;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .loading {
+      @include flex-center;
+      padding: var(--spacing-xl);
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .noUsers, .searchNoResults {
+      text-align: center;
+      padding: var(--spacing-xl);
+      color: var(--text-muted);
+
+      h4 {
+        color: inherit;
+        margin-bottom: var(--spacing-md);
+      }
+
+      .clearSearchButton {
+        @include button-primary;
+        margin-top: var(--spacing-md);
+      }
+    }
+
+    .tableContainer {
+      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .usersTable {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--bg-white);
+
+      thead {
+        background: var(--gradient-primary);
+        color: white;
+
+        th {
+          padding: var(--spacing-md) var(--spacing-lg);
+          text-align: left;
+          font-weight: 600;
+          white-space: nowrap;
+        }
+      }
+
+      tbody {
+        tr {
+          border-bottom: 1px solid var(--bg-gray);
+          transition: var(--transition-fast);
+
+          &:hover {
+            background: var(--bg-light);
+          }
+
+          &.blockedUser {
+            opacity: 0.6;
+            background: #fff5f5;
+          }
+        }
+
+        td {
+          padding: var(--spacing-md) var(--spacing-lg);
+          vertical-align: middle;
+        }
+
+        .userId {
+          font-family: monospace;
+          color: var(--text-muted);
+          font-size: 0.9rem;
+        }
+
+        .username {
+          font-weight: 600;
+          color: var(--text-primary);
+        }
+
+        .fullName {
+          .highlight {
+            background: #fffacd;
+            padding: 2px 4px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+          }
+        }
+
+        .introductionStatus {
+          .completed {
+            @include badge-success;
+          }
+
+          .pending {
+            @include badge-warning;
+          }
+        }
+
+        .role {
+          .adminRole {
+            @include badge-danger;
+          }
+
+          .userRole {
+            @include badge-info;
+          }
+        }
+
+        .status {
+          .active {
+            @include badge-success;
+          }
+
+          .blocked {
+            @include badge-danger;
+          }
+        }
+
+        .registrationDate {
+          color: var(--text-muted);
+          font-size: 0.9rem;
+        }
+
+        .actions {
+          .actionButtons {
+            display: flex;
+            gap: var(--spacing-sm);
+
+            .blockBtn {
+              @include button-warning;
+              padding: var(--spacing-xs) var(--spacing-sm);
+              font-size: 0.8rem;
+            }
+
+            .unblockBtn {
+              @include button-success;
+              padding: var(--spacing-xs) var(--spacing-sm);
+              font-size: 0.8rem;
+            }
+
+            .deleteBtn {
+              @include button-danger;
+              padding: var(--spacing-xs) var(--spacing-sm);
+              font-size: 0.8rem;
+            }
+          }
+
+          .noActions {
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.9rem;
+          }
+        }
+      }
+    }
+  }
+
+  .stats {
+    @include section-light;
+    margin-top: var(--spacing-xl);
+
+    h4 {
+      margin-top: 0;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .statsGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: var(--spacing-lg);
+
+      .statItem {
+        @include flex-column;
+        align-items: center;
+        text-align: center;
+        padding: var(--spacing-lg);
+        background: var(--bg-white);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        transition: var(--transition-normal);
+
+        &:hover {
+          transform: translateY(-4px);
+          box-shadow: var(--shadow-md);
+        }
+
+        .statNumber {
+          font-size: 2rem;
+          font-weight: 700;
+          background: var(--gradient-primary);
+          -webkit-background-clip: text;
+          background-clip: text;
+          color: transparent;
+          line-height: 1;
+          margin-bottom: var(--spacing-sm);
+        }
+
+        .statLabel {
+          color: var(--text-muted);
+          font-size: 0.9rem;
+        }
+      }
+    }
+  }
+}
