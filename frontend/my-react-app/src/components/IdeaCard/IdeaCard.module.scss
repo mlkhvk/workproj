@@ -1,5 +1,6 @@
 @use '../../styles/variables.css';
 @use '../../styles/mixins.scss' as *;
+
 .card {
   @include card-base;
   padding: var(--spacing-lg);
@@ -65,9 +66,13 @@
     overflow-wrap: break-word;
     hyphens: auto;
     display: -webkit-box;
-    -webkit-line-clamp: 1;
+    display: -moz-box;
+    -webkit-line-clamp: 3;
+    -moz-line-clamp: 3;
+    line-clamp: 3; 
     -webkit-box-orient: vertical;
-    line-clamp: 3;
+    -moz-box-orient: vertical;
+    box-orient: vertical;
     overflow: hidden;
   }
 }
@@ -82,6 +87,67 @@
   font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
   border: 1px solid var(--bg-gray);
   flex-shrink: 0;
+}
+.authorInfo {
+  background: linear-gradient(135deg, rgba(240, 249, 255, 0.9) 0%, rgba(224, 242, 254, 0.9) 100%);
+  padding: 0.75rem 1rem;
+  margin: 0.5rem 0 1rem 0;
+  border-radius: var(--radius-md);
+  border-left: 3px solid #4a6fa5;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(74, 111, 165, 0.2);
+  box-shadow: 0 2px 8px rgba(74, 111, 165, 0.1);
+  transition: all var(--transition-fast);
+  
+  &:hover {
+    background: linear-gradient(135deg, rgba(224, 242, 254, 0.95) 0%, rgba(186, 230, 253, 0.95) 100%);
+    border-color: #4a6fa5;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(74, 111, 165, 0.15);
+  }
+}
+
+.authorLabel {
+  font-weight: 700;
+  color: #2c5282;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  
+  &::before {
+    content: '👤';
+    font-size: 0.9rem;
+  }
+}
+
+.authorName {
+  color: #2c5282;
+  font-weight: 600;
+  flex: 1;
+  word-break: break-word;
+  line-height: 1.4;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.authorAdditional {
+  color: #718096;
+  font-size: 0.8rem;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(113, 128, 150, 0.2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
 }
 
 .meta {
@@ -162,9 +228,13 @@
   font-size: 1rem;
   background: var(--gradient-primary);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  color: transparent;
   white-space: nowrap;
+  @supports not (-webkit-background-clip: text) {
+    color: var(--text-primary);
+    background: none;
+  }
 }
 
 .commentsCount {
@@ -178,6 +248,52 @@
   border: 1px solid var(--bg-gray);
   font-weight: 600;
   white-space: nowrap;
+}
+
+.ideaStatus {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.statusApproved {
+  background: linear-gradient(135deg, rgba(72, 187, 120, 0.1) 0%, rgba(56, 161, 105, 0.1) 100%);
+  color: #276749;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid rgba(72, 187, 120, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.statusPending {
+  background: linear-gradient(135deg, rgba(237, 137, 54, 0.1) 0%, rgba(221, 107, 32, 0.1) 100%);
+  color: #9c4221;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid rgba(237, 137, 54, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.statusHidden {
+  background: linear-gradient(135deg, rgba(245, 101, 101, 0.1) 0%, rgba(229, 62, 62, 0.1) 100%);
+  color: #c53030;
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid rgba(245, 101, 101, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .hiddenWarning {
@@ -258,4 +374,29 @@
 
 .card * {
   transition: all var(--transition-fast);
+}
+@media (max-width: 768px) {
+  .authorInfo {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.85rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .authorAdditional {
+    max-width: 100%;
+    white-space: normal;
+    overflow: visible;
+  }
+  
+  .authorName {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .authorInfo {
+    margin: 0.25rem 0 0.75rem 0;
+  }
 }

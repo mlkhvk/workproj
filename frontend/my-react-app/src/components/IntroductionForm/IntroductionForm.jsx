@@ -82,7 +82,7 @@ export default function IntroductionForm({ user, onComplete, onCancel }) {
             type="submit" //Тип кнопки (submit для формы)
             className={`${styles.btn} ${styles.btnPrimary}`}//CSS классы
             disabled={loading}>
-            {loading ? 'Сохранение...' : 'Продолжить'}
+            {loading ? 'Сохранение..' : 'Продолжить'}
           </button>
         </div>
       </form>

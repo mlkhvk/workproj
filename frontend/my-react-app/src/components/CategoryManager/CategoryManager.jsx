@@ -131,6 +131,7 @@ export default function CategoryManager() {
           value={newCategoryName}
           onChange={(e) => setNewCategoryName(e.target.value)}
           placeholder="Введите название новой области применения"
+          maxLength={40}
           disabled={loading}/>
         <button type="submit" disabled={loading}>
           {loading ? "Добавление" : "Добавить"}
@@ -141,7 +142,7 @@ export default function CategoryManager() {
       <div className={styles.categoriesList}>
         <h4>Существующие области применения:</h4>
         {loading ? (
-          <p>Загрузка...</p>
+          <p>Загрузка..</p>
         ) : categories.length === 0 ? (
           <p>Нет категорий</p>
         ) : (

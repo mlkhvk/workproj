@@ -75,8 +75,7 @@ export default function PasswordModal({ users, onClose, onSave, isSaving }) {
                       navigator.clipboard.writeText(
                         `Логин: ${user.username}\nПароль: ${user.password}`
                       ).then(() => alert("Скопировано"));
-                    }}
-                  >
+                    }}>
                     Копировать
                   </button>
                 </div>
@@ -92,16 +91,14 @@ export default function PasswordModal({ users, onClose, onSave, isSaving }) {
             <button 
               className={styles.copyAllBtn}
               onClick={handleCopyAll}
-              disabled={isSaving}
-            >
+              disabled={isSaving}>
               {copiedAll ? "Скопировано" : "Копировать все"}
             </button>
             
             <button 
               className={styles.saveBtn}
               onClick={onSave}
-              disabled={isSaving}
-            >
+              disabled={isSaving}>
               {isSaving ? "Сохраняем" : "Сохранить и закрыть"}
             </button>
           </div>

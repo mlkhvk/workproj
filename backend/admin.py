@@ -1,8 +1,8 @@
 import random
 import string
 from typing import Dict, List
-from backend.database import JSONDatabase
-from backend.auth import AuthSystem
+from database import JSONDatabase
+from auth import AuthSystem
 
 class AdminSystem:
     def __init__(self, db: JSONDatabase, auth: AuthSystem):

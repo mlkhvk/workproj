@@ -51,7 +51,7 @@ class JSONDatabase:
             self._save_json(self.users_file, {
                 "users": [{
                     "id": 1, #Id
-                    "username": "admin", #Логин
+                    "username": "1QsMeP23", #Логин
                     "password": admin_password_hash, #Хешированный пароль
                     "role": "admin", #Роль администратора
                     "is_active": True, #Активен
@@ -483,6 +483,7 @@ class JSONDatabase:
         
         return {"success": True, "message": f"Категория '{old_name}' успешно изменена на '{new_name}'"}  # Успешно
 
+    
     #Удаление категории (админ)
     def delete_category(self, category_name: str) -> Dict[str, any]:
         data = self._load_json(self.config_file)  # Загружаем конфигурацию
@@ -509,3 +510,35 @@ class JSONDatabase:
         self._save_json(self.config_file, data)  #Сохраняем изменения
         
         return {"success": True, "message": f"Категория '{category_name}' успешно удалена"}  #Успешно
+
+    def get_user_by_id(self, user_id: int) -> Optional[Dict]:
+        """Получение пользователя по ID"""
+        data = self._load_json(self.users_file)
+        for user in data.get("users", []):
+            if user["id"] == user_id:
+                # Создаем копию без пароля
+                user_copy = user.copy()
+                if "password" in user_copy:
+                    del user_copy["password"]
+                if "plain_password" in user_copy:
+                    del user_copy["plain_password"]
+                return user_copy
+        return None
+
+    # Также обновить метод get_idea_by_id для включения информации об авторе
+    def get_idea_by_id(self, idea_id: int) -> Optional[Dict]:
+        data = self._load_json(self.ideas_file)
+        for idea in data.get("ideas", []):
+            if idea["id"] == idea_id:
+                # Добавляем информацию об авторе
+                if idea.get("author_id"):
+                    author = self.get_user_by_id(idea["author_id"])
+                    if author:
+                        idea["author_info"] = {
+                            "id": author["id"],
+                            "username": author.get("username", ""),
+                            "full_name": author.get("full_name", ""),
+                            "role": author.get("role", "user")
+                        }
+                return idea
+        return None

@@ -1,5 +1,6 @@
 @use '../../styles/variables.css';
 @use '../../styles/mixins.scss' as *;
+
 .panel {
   .userGeneration {
     @include section-warning;
@@ -16,16 +17,30 @@
       align-items: center;
       margin-bottom: var(--spacing-md);
 
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: var(--spacing-md);
+      }
+
       .countControl {
         display: flex;
         align-items: center;
         gap: var(--spacing-md);
         background-color: var(--bg-ligh);
 
+        @media (max-width: 768px) {
+          justify-content: space-between;
+        }
+
         label {
           color: var(--bg-dark);
           font-weight: 600;
           font-size: 18px;
+
+          @media (max-width: 480px) {
+            font-size: 16px;
+          }
         }
 
         .countInput {
@@ -33,13 +48,24 @@
           width: 100px;
           height: 45px;
           text-align: center;
+          color: var(--text-primary);
+
+          @media (max-width: 768px) {
+            width: 80px;
+            height: 40px;
+          }
         }
       }
 
       .generateBtn {
         color: var(--bg-dark);
         background-color: var(--bg-light);
-        white-space: nowrap; 
+        white-space: nowrap;
+
+        @media (max-width: 768px) {
+          width: 100%;
+          padding: var(--spacing-md);
+        }
 
         &:disabled {
           opacity: 0.6;
@@ -53,6 +79,10 @@
       color: var(--text-muted);
       font-size: 0.9rem;
       font-style: italic;
+
+      @media (max-width: 480px) {
+        font-size: 0.8rem;
+      }
     }
   }
 
@@ -72,6 +102,13 @@
       .searchInput {
         @include input-base;
         padding-right: 40px;
+        color: var(--text-primary);
+        font-size: 16px; 
+
+        @media (max-width: 480px) {
+          padding: var(--spacing-sm) var(--spacing-md);
+          height: 44px; 
+        }
       }
 
       .clearSearchBtn {
@@ -80,13 +117,19 @@
         right: var(--spacing-md);
         top: 50%;
         transform: translateY(-50%);
-        width: 24px;
-        height: 24px;
+        width: 32px;
+        height: 32px;
         border-radius: 50%;
         @include flex-center;
-        font-size: 0.8rem;
+        font-size: 1rem;
         color: var(--text-muted);
         transition: var(--transition-fast);
+
+        @media (max-width: 480px) {
+          width: 28px;
+          height: 28px;
+          right: var(--spacing-sm);
+        }
 
         &:hover {
           background: var(--text-muted);
@@ -99,6 +142,10 @@
       margin: 0;
       color: var(--text-muted);
       font-size: 0.9rem;
+
+      @media (max-width: 480px) {
+        font-size: 0.8rem;
+      }
     }
   }
 
@@ -123,14 +170,27 @@
       padding: var(--spacing-xl);
       color: var(--text-muted);
 
+      @media (max-width: 480px) {
+        padding: var(--spacing-lg);
+      }
+
       h4 {
         color: inherit;
         margin-bottom: var(--spacing-md);
+
+        @media (max-width: 480px) {
+          font-size: 1.1rem;
+        }
       }
 
       .clearSearchButton {
         @include button-primary;
         margin-top: var(--spacing-md);
+
+        @media (max-width: 480px) {
+          width: 100%;
+          padding: var(--spacing-md);
+        }
       }
     }
 
@@ -138,16 +198,29 @@
       overflow-x: auto;
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-sm);
+      -webkit-overflow-scrolling: touch; 
     }
 
     .usersTable {
       width: 100%;
       border-collapse: collapse;
       background: var(--bg-white);
+      min-width: 600px; 
+
+      @media (max-width: 768px) {
+        min-width: 800px; 
+      }
 
       thead {
         background: var(--gradient-primary);
         color: white;
+
+        @media (max-width: 768px) {
+          th {
+            padding: var(--spacing-sm);
+            font-size: 0.9rem;
+          }
+        }
 
         th {
           padding: var(--spacing-md) var(--spacing-lg);
@@ -175,12 +248,22 @@
         td {
           padding: var(--spacing-md) var(--spacing-lg);
           vertical-align: middle;
+
+          @media (max-width: 768px) {
+            padding: var(--spacing-sm);
+            font-size: 0.9rem;
+          }
         }
 
         .userId {
           font-family: monospace;
           color: var(--text-muted);
           font-size: 0.9rem;
+
+          @media (max-width: 480px) {
+            font-size: 0.8rem;
+            word-break: break-all;
+          }
         }
 
         .username {
@@ -230,29 +313,46 @@
         .registrationDate {
           color: var(--text-muted);
           font-size: 0.9rem;
+
+          @media (max-width: 480px) {
+            font-size: 0.8rem;
+          }
         }
 
         .actions {
           .actionButtons {
             display: flex;
             gap: var(--spacing-sm);
+            flex-wrap: wrap;
+
+            @media (max-width: 768px) {
+              flex-direction: column;
+              gap: var(--spacing-xs);
+            }
+
+            .blockBtn,
+            .unblockBtn,
+            .deleteBtn {
+              padding: var(--spacing-xs) var(--spacing-sm);
+              font-size: 0.8rem;
+
+              @media (max-width: 768px) {
+                width: 100%;
+                justify-content: center;
+                padding: var(--spacing-sm);
+              }
+            }
 
             .blockBtn {
               @include button-warning;
-              padding: var(--spacing-xs) var(--spacing-sm);
-              font-size: 0.8rem;
             }
 
             .unblockBtn {
               @include button-success;
-              padding: var(--spacing-xs) var(--spacing-sm);
-              font-size: 0.8rem;
             }
 
             .deleteBtn {
               @include button-danger;
-              padding: var(--spacing-xs) var(--spacing-sm);
-              font-size: 0.8rem;
             }
           }
 
@@ -281,6 +381,16 @@
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
       gap: var(--spacing-lg);
 
+      @media (max-width: 768px) {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-md);
+      }
+
+      @media (max-width: 480px) {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-sm);
+      }
+
       .statItem {
         @include flex-column;
         align-items: center;
@@ -290,6 +400,10 @@
         border-radius: var(--radius-lg);
         box-shadow: var(--shadow-sm);
         transition: var(--transition-normal);
+
+        @media (max-width: 480px) {
+          padding: var(--spacing-md);
+        }
 
         &:hover {
           transform: translateY(-4px);
@@ -305,6 +419,10 @@
           color: transparent;
           line-height: 1;
           margin-bottom: var(--spacing-sm);
+
+          @media (max-width: 480px) {
+            font-size: 1.75rem;
+          }
         }
 
         .statLabel {
@@ -312,6 +430,38 @@
           font-size: 0.9rem;
         }
       }
+    }
+  }
+}
+@media (max-width: 768px) {
+  .panel {
+    padding: var(--spacing-sm);
+
+    .userGeneration,
+    .searchSection,
+    .usersSection,
+    .stats {
+      margin-bottom: var(--spacing-lg);
+      padding: var(--spacing-md);
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .panel {
+    padding: var(--spacing-xs);
+
+    .userGeneration,
+    .searchSection,
+    .usersSection,
+    .stats {
+      margin-bottom: var(--spacing-md);
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-md);
+    }
+
+    h4 {
+      font-size: 1.1rem;
     }
   }
 }

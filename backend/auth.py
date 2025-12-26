@@ -1,5 +1,5 @@
 from typing import Dict, Optional
-from backend.database import JSONDatabase
+from database import JSONDatabase
 
 class AuthSystem:
     def __init__(self, db: JSONDatabase):

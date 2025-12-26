@@ -208,7 +208,7 @@ export default function AdminPanel({ users, onBlock, onUnblock, onDelete }) {
             disabled={isGenerating}
             className={styles.generateBtn}
             type="button">
-            {isGenerating ? 'Создание...' : `Создать ${userCount} пользователей`}
+            {isGenerating ? 'Создание..' : `Создать ${userCount} пользователей`}
           </button>
         </div>
         <p className={styles.generationHint}>
@@ -222,7 +222,7 @@ export default function AdminPanel({ users, onBlock, onUnblock, onDelete }) {
         <div className={styles.searchContainer}>
           <input
             type="text"
-            placeholder="Поиск по фамилии..."
+            placeholder="Поиск по фамилии.."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={styles.searchInput}
@@ -231,8 +231,7 @@ export default function AdminPanel({ users, onBlock, onUnblock, onDelete }) {
             <button 
               onClick={() => setSearchTerm("")}
               className={styles.clearSearchBtn}
-              type="button"
-            >
+              type="button">
               ✕
             </button>
           )}

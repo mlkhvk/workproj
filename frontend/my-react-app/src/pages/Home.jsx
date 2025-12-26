@@ -24,6 +24,7 @@ export default function Home({ user }) {
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
   //Состояние для отслеживания загрузки категорий
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [isTitleExpanded, setIsTitleExpanded] = useState(false);
 
   //Эффект для загрузки категорий при монтировании компонента
   useEffect(() => {
@@ -68,6 +69,12 @@ export default function Home({ user }) {
     });
   };
 
+  // В функции handleOpenModal сбросьте состояние
+const handleOpenModal = (idea) => {
+  setSelectedIdea(idea);
+  setIsModalOpen(true);
+  setIsTitleExpanded(false); // Сбрасываем при открытии новой идеи
+};
   //Функция фильтрации идей в зависимости от выбранного фильтра
   const filteredIdeas = (() => {
     let filtered = category === "all" 
@@ -287,7 +294,24 @@ export default function Home({ user }) {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             {/*Фиксированный заголовок модального окна*/}
             <div className={styles.modalHeader}>
-              <h2>{selectedIdea.title || 'Без названия'}</h2>
+              <div className={styles.headerContent}>
+                <h2 
+                  className={`${styles.headerTitle} ${isTitleExpanded ? styles.expanded : styles.collapsed}`}
+                  onClick={() => setIsTitleExpanded(!isTitleExpanded)}
+                >
+                  {selectedIdea.title || 'Без названия'}
+                </h2>
+                {/* Кнопка "раскрыть/свернуть" (опционально) */}
+                {selectedIdea.title && selectedIdea.title.length > 100 && (
+                  <button 
+                    className={styles.expandTitleBtn}
+                    onClick={() => setIsTitleExpanded(!isTitleExpanded)}
+                    aria-label={isTitleExpanded ? "Свернуть заголовок" : "Раскрыть заголовок"}
+                  >
+                    {isTitleExpanded ? 'Свернуть' : 'Раскрыть'}
+                  </button>
+                )}
+              </div>
               <button className={styles.modalClose} onClick={handleCloseModal}>✕</button>
             </div>
             
@@ -333,18 +357,17 @@ export default function Home({ user }) {
               {/*Мета-информация об идее*/}
               <div className={styles.modalMeta}>
                 <div className={styles.metaItem}>
-                  <strong>Категория:</strong> {selectedIdea.category || 'Не указана'}
+                  <strong>Категория:</strong> <div className={styles.colorItem}>{selectedIdea.category || 'Не указана'} </div>
                 </div>
                 <div className={styles.metaItem}>
-                  <strong>Дата создания:</strong> {selectedIdea.created_at ? new Date(selectedIdea.created_at).toLocaleDateString('ru-RU') : 'Неизвестно'}
-                </div>
-                <div className={styles.metaItem}>
-                  <strong>ID:</strong> #{selectedIdea.id}
+                  <strong>Дата создания:</strong> <div className={styles.colorItem}> {selectedIdea.created_at ? new Date(selectedIdea.created_at).toLocaleDateString('ru-RU') : 'Неизвестно'} </div>
                 </div>
                 <div className={styles.metaItem}>
                   <strong>Статус:</strong> 
+                  <div className={styles.colorItem}>
                   {selectedIdea.is_approved ? ' Одобрена' : ' На рассмотрении'}
                   {selectedIdea.is_hidden && ' Скрыта'}
+                  </div>
                 </div>
               </div>
 

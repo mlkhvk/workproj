@@ -6,12 +6,11 @@ import AdminDashboard from "./pages/AdminDashboard";
 import { checkServerHealth } from "./api/api";
 import styles from "./App.module.scss";
 
-//Компонент шапки приложения (условное отображение)
 function Header({ user, setUser }) {
   const location = useLocation();//Получаем текущий путь
   const isAdminPage = location.pathname.startsWith('/admin');//Проверяем админскую страницу
   
-  //Не показываем шапку на админских страницах
+  //Не показываем хеддер на админских страницах
   if (isAdminPage) {
     return null;
   }
@@ -21,7 +20,6 @@ function Header({ user, setUser }) {
       <h1>Название компании</h1>
       {user && (
         <div className={styles.userInfo}>
-          <span>Привет, {user.username}</span>
           {/*Ссылка в админ-панель для администраторов*/}
           {user.role === "admin" && (
             <a href="/admin" className={styles.adminLink}>Админ-панель</a>
@@ -45,11 +43,7 @@ function Header({ user, setUser }) {
 function Footer() {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
-  
-  //Не показываем подвал на админских страницах
-  if (isAdminPage) {
-    return null;
-  }
+
 
   return (
     <footer className={styles.footer}>
@@ -103,13 +97,13 @@ function AppContent() {
   };
 
   //Отображение состояния загрузки
-  if (loading) return <div className={styles.loading}>Загрузка...</div>;
+  if (loading) return <div className={styles.loading}>Загрузка..</div>;
 
   //Отображение ошибки недоступности сервера
   if (serverStatus === "error") {
     return (
       <div className={styles.serverError}>
-        <h2>⚠️ Сервер недоступен</h2>
+        <h2>Сервер недоступен</h2>
         <button onClick={() => window.location.reload()}>Обновить</button>
       </div>
     );

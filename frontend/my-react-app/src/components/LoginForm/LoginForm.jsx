@@ -71,7 +71,7 @@ export default function LoginForm({ onSubmit, error }) { // Принимаем e
           type="submit"
           className={`${styles.btn} ${styles.btnPrimary}`}
           disabled={loading}>
-          {loading ? 'Вход...' : 'Войти'}
+          {loading ? 'Вход' : 'Войти'}
         </button>
       </form>
     </div>

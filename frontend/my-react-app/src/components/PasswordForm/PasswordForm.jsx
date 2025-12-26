@@ -99,6 +99,7 @@ export default function ChangePasswordForm({ user, onSubmit, onCancel }) {
             onChange={handleChange}//Обработчик изменения
             disabled={loading}//Блокировка при загрузке
             placeholder="Введите текущий пароль"//Подсказка в поле
+            className={styles.colorPassword}
             required/>
           <div className={styles.help}>
             Пароль, который вы получили при инициализации системы
@@ -116,6 +117,7 @@ export default function ChangePasswordForm({ user, onSubmit, onCancel }) {
             onChange={handleChange}//Обработчик изменения
             disabled={loading}//Блокировка при загрузке
             placeholder="Введите новый пароль"//Подсказка в поле
+            className={styles.colorPassword}
             required/>
           <div className={styles.help}>
             Минимум 4 символа
@@ -133,6 +135,7 @@ export default function ChangePasswordForm({ user, onSubmit, onCancel }) {
             onChange={handleChange}//Обработчик изменения
             disabled={loading}//Блокировка при загрузке
             placeholder="Повторите новый пароль"//Подсказка в поле
+            className={styles.colorPassword}
             required/>
         </div>
 
@@ -143,7 +146,7 @@ export default function ChangePasswordForm({ user, onSubmit, onCancel }) {
             type="submit"//Тип кнопки submit
             className={styles.submitButton}//CSS класс для стилизации
             disabled={loading}>
-            {loading ? "Смена пароля..." : "Сменить пароль"}
+            {loading ? "Смена пароля.." : "Сменить пароль"}
           </button>
           
           {/*Кнопка отмены (отображается если передан onCancel)*/}

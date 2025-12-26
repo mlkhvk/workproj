@@ -8,6 +8,7 @@ import {
   hideIdea,
   unhideIdea,
   getAdminIdeas,
+  getAdminIdeasWithAuthors,
   searchIdeas,
   voteIdea,
   addComment,
@@ -44,6 +45,7 @@ export default function AdminDashboard({ user }) {
   const [commentText, setCommentText] = useState("");
   //Состояние для отслеживания отправки комментария
   const [isSubmittingComment, setIsSubmittingComment] = useState(false);
+  const [isTitleExpanded, setIsTitleExpanded] = useState(false);
 
   //Функция обновления списка пользователей
   const refreshUsers = async () => {
@@ -63,18 +65,26 @@ export default function AdminDashboard({ user }) {
     }
   };
 
-  //Функция обновления списка идей
+  //Функция обновления списка идей с информацией об авторах
   const refreshIdeas = async () => {
     setLoading(true);
     setError("");
     try {
-      const result = await getAdminIdeas();
+      // Используем новый метод с информацией об авторах
+      const result = await getAdminIdeasWithAuthors();
       if (result.success) {
         setIdeas(result.ideas);
         setSearchQuery("");
       } else {
-        setError(result.message || "Ошибка загрузки идей");
-        setIdeas([]);
+        // Если новый метод не работает, используем старый
+        console.log("Новый метод с авторами недоступен, используем старый...");
+        const fallbackResult = await getAdminIdeas();
+        if (fallbackResult.success) {
+          setIdeas(fallbackResult.ideas);
+        } else {
+          setError(fallbackResult.message || "Ошибка загрузки идей");
+          setIdeas([]);
+        }
       }
     } catch (error) {
       console.error('Error loading admin ideas:', error);
@@ -98,7 +108,25 @@ export default function AdminDashboard({ user }) {
     try {
       const result = await searchIdeas(query);
       if (result.success) {
-        setIdeas(result.ideas);
+        // Обогащаем результаты поиска информацией об авторах
+        const ideasWithAuthors = result.ideas.map(idea => {
+          if (idea.author_id) {
+            // Ищем автора в списке пользователей
+            const author = users.find(u => u.id === idea.author_id);
+            if (author) {
+              return {
+                ...idea,
+                author_info: {
+                  id: author.id,
+                  username: author.username,
+                  full_name: author.full_name || ""
+                }
+              };
+            }
+          }
+          return idea;
+        });
+        setIdeas(ideasWithAuthors);
         setSearchQuery(query);
         setError("");
       } else {
@@ -119,6 +147,7 @@ export default function AdminDashboard({ user }) {
     setSelectedIdea(idea);
     setShowModal(true);
     setCommentText("");
+    setIsTitleExpanded(false);
   };
 
   //Обработчик закрытия модального окна
@@ -126,6 +155,7 @@ export default function AdminDashboard({ user }) {
     setShowModal(false);
     setSelectedIdea(null);
     setCommentText("");
+    setIsTitleExpanded(false);
   };
 
   //Обработчик голосования за идею
@@ -149,10 +179,12 @@ export default function AdminDashboard({ user }) {
       const result = await voteIdea(selectedIdea.id, user.id, vote);
       if (result.success) {
         await refreshIdeas();
-        const updatedIdeas = await getAdminIdeas();
-        const updatedIdea = updatedIdeas.ideas.find(idea => idea.id === selectedIdea.id);
-        if (updatedIdea) {
-          setSelectedIdea(updatedIdea);
+        const result = await getAdminIdeasWithAuthors();
+        if (result.success) {
+          const updatedIdea = result.ideas.find(idea => idea.id === selectedIdea.id);
+          if (updatedIdea) {
+            setSelectedIdea(updatedIdea);
+          }
         }
       } else {
         alert(result.message || "Ошибка при голосовании");
@@ -169,10 +201,12 @@ export default function AdminDashboard({ user }) {
     if (result.success) {
       await refreshIdeas();
       if (selectedIdea && selectedIdea.id === ideaId) {
-        const updatedIdeas = await getAdminIdeas();
-        const updatedIdea = updatedIdeas.ideas.find(idea => idea.id === ideaId);
-        if (updatedIdea) {
-          setSelectedIdea(updatedIdea);
+        const result = await getAdminIdeasWithAuthors();
+        if (result.success) {
+          const updatedIdea = result.ideas.find(idea => idea.id === ideaId);
+          if (updatedIdea) {
+            setSelectedIdea(updatedIdea);
+          }
         }
       }
     } else {
@@ -186,10 +220,12 @@ export default function AdminDashboard({ user }) {
     if (result.success) {
       await refreshIdeas();
       if (selectedIdea && selectedIdea.id === ideaId) {
-        const updatedIdeas = await getAdminIdeas();
-        const updatedIdea = updatedIdeas.ideas.find(idea => idea.id === ideaId);
-        if (updatedIdea) {
-          setSelectedIdea(updatedIdea);
+        const result = await getAdminIdeasWithAuthors();
+        if (result.success) {
+          const updatedIdea = result.ideas.find(idea => idea.id === ideaId);
+          if (updatedIdea) {
+            setSelectedIdea(updatedIdea);
+          }
         }
       }
     } else {
@@ -203,10 +239,12 @@ export default function AdminDashboard({ user }) {
     if (result.success) {
       await refreshIdeas();
       if (selectedIdea && selectedIdea.id === ideaId) {
-        const updatedIdeas = await getAdminIdeas();
-        const updatedIdea = updatedIdeas.ideas.find(idea => idea.id === ideaId);
-        if (updatedIdea) {
-          setSelectedIdea(updatedIdea);
+        const result = await getAdminIdeasWithAuthors();
+        if (result.success) {
+          const updatedIdea = result.ideas.find(idea => idea.id === ideaId);
+          if (updatedIdea) {
+            setSelectedIdea(updatedIdea);
+          }
         }
       }
     } else {
@@ -224,10 +262,12 @@ export default function AdminDashboard({ user }) {
       if (result.success) {
         setCommentText("");
         await refreshIdeas();
-        const updatedIdeas = await getAdminIdeas();
-        const updatedIdea = updatedIdeas.ideas.find(idea => idea.id === selectedIdea.id);
-        if (updatedIdea) {
-          setSelectedIdea(updatedIdea);
+        const result = await getAdminIdeasWithAuthors();
+        if (result.success) {
+          const updatedIdea = result.ideas.find(idea => idea.id === selectedIdea.id);
+          if (updatedIdea) {
+            setSelectedIdea(updatedIdea);
+          }
         }
       } else {
         alert("Ошибка при добавлении комментария");
@@ -250,10 +290,12 @@ export default function AdminDashboard({ user }) {
       const result = await deleteComment(selectedIdea.id, commentId);
       if (result.success) {
         await refreshIdeas();
-        const updatedIdeas = await getAdminIdeas();
-        const updatedIdea = updatedIdeas.ideas.find(idea => idea.id === selectedIdea.id);
-        if (updatedIdea) {
-          setSelectedIdea(updatedIdea);
+        const result = await getAdminIdeasWithAuthors();
+        if (result.success) {
+          const updatedIdea = result.ideas.find(idea => idea.id === selectedIdea.id);
+          if (updatedIdea) {
+            setSelectedIdea(updatedIdea);
+          }
         }
       } else {
         alert(result.message || "Ошибка при удалении комментария");
@@ -364,11 +406,12 @@ export default function AdminDashboard({ user }) {
             <div className={styles.ideasSearch}>
               <input
                 type="text"
-                placeholder="Поиск по названию идеи..."
+                placeholder="Поиск по названию идеи"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSearchIdeas(searchQuery)}
                 className={styles.searchInput}
+                maxLength={50}
               />
               <button 
                 onClick={() => handleSearchIdeas(searchQuery)}
@@ -390,7 +433,7 @@ export default function AdminDashboard({ user }) {
             {searchQuery && (
               <div className={styles.searchInfo}>
                 <p>
-                  {isSearching ? 'Поиск...' : `Найдено идей: ${ideas.length}`}
+                  {isSearching ? 'Поиск' : `Найдено идей: ${ideas.length}`}
                   {searchQuery && ` по названию: "${searchQuery}"`}
                 </p>
                 <button 
@@ -423,6 +466,7 @@ export default function AdminDashboard({ user }) {
                     key={idea.id}
                     idea={idea}
                     showAdminActions={true}
+                    showAuthorInfo={true} // Показываем информацию об авторе для админа
                     onApprove={handleApproveIdea}
                     onHide={handleHideIdea}
                     onUnhide={handleUnhideIdea}
@@ -449,12 +493,48 @@ export default function AdminDashboard({ user }) {
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             {/*Фиксированный заголовок модального окна*/}
             <div className={styles.modalHeader}>
-              <h2>{selectedIdea.title || 'Без названия'}</h2>
+              <div className={styles.headerContent}>
+                <h2 
+                  className={`${styles.headerTitle} ${isTitleExpanded ? styles.expanded : styles.collapsed}`}
+                  onClick={() => setIsTitleExpanded(!isTitleExpanded)}
+                >
+                  {selectedIdea.title || 'Без названия'}
+                </h2>
+                {/* Кнопка "раскрыть/свернуть" (опционально) */}
+                {selectedIdea.title && selectedIdea.title.length > 100 && (
+                  <button 
+                    className={styles.expandTitleBtn}
+                    onClick={() => setIsTitleExpanded(!isTitleExpanded)}
+                    aria-label={isTitleExpanded ? "Свернуть заголовок" : "Раскрыть заголовок"}
+                  >
+                    {isTitleExpanded ? 'Свернуть ▲' : 'Раскрыть ▼'}
+                  </button>
+                )}
+              </div>
               <button className={styles.modalClose} onClick={handleCloseModal}>✕</button>
             </div>
             
-            {/*Прокручиваемый контент модального окна*/}
             <div className={styles.modalContent}>
+              {/*Информация об авторе (ТОЛЬКО ДЛЯ АДМИНА)*/}
+              {selectedIdea.author_info && (
+                <div className={styles.authorSection}>
+                  <h3>Информация об авторе</h3>
+                  <div className={styles.authorDetails}>
+                    <div className={styles.authorDetail}>
+                      <strong>ФИО:</strong> 
+                      <span className={styles.authorValue}>
+                        {selectedIdea.author_info.full_name || 'Не указано'}
+                      </span>
+                    </div>
+                    <div className={styles.authorDetail}>
+                      <strong>Логин:</strong> 
+                      <span className={styles.authorValue}>
+                        {selectedIdea.author_info.username || 'Не указан'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/*Секция подробного описания*/}
               <div className={styles.modalSection}>
@@ -495,18 +575,21 @@ export default function AdminDashboard({ user }) {
               {/*Мета-информация об идее*/}
               <div className={styles.modalMeta}>
                 <div className={styles.metaItem}>
-                  <strong>Категория:</strong> {selectedIdea.category || 'Не указана'}
+                  <strong>Категория:</strong> <div className={styles.colorItem}>{selectedIdea.category || 'Не указана'} </div>
                 </div>
                 <div className={styles.metaItem}>
-                  <strong>Дата создания:</strong> {selectedIdea.created_at ? new Date(selectedIdea.created_at).toLocaleDateString('ru-RU') : 'Неизвестно'}
-                </div>
-                <div className={styles.metaItem}>
-                  <strong>ID:</strong> #{selectedIdea.id}
+                  <strong>Дата создания:</strong> <div className={styles.colorItem}> {selectedIdea.created_at ? new Date(selectedIdea.created_at).toLocaleDateString('ru-RU') : 'Неизвестно'} </div>
                 </div>
                 <div className={styles.metaItem}>
                   <strong>Статус:</strong> 
-                  {selectedIdea.is_approved ? ' Одобрена' : ' На рассмотрении'}
-                  {selectedIdea.is_hidden && ' Скрыта'}
+                  <div className={styles.colorItem}>
+                    {selectedIdea.is_approved ? ' Одобрена' : ' На рассмотрении'}
+                    {selectedIdea.is_hidden && ' Скрыта'}
+                  </div>
+                </div>
+                <div className={styles.metaItem}>
+                  <strong>ID идеи:</strong> 
+                  <div className={styles.colorItem}> #{selectedIdea.id} </div>
                 </div>
               </div>
 
@@ -539,7 +622,7 @@ export default function AdminDashboard({ user }) {
                 {Array.isArray(selectedIdea.comments) && selectedIdea.comments.length > 0 ? (
                   <div className={styles.commentsList}>
                     {selectedIdea.comments.map((comment) => (
-                      <div key={comment.id} className={styles.comment}>
+                      <div key={`comment-${comment.id}-${selectedIdea.id}`} className={styles.comment}>
                         <div className={styles.commentMeta}>
                           <div>
                             <span className={styles.commentAuthor}>Пользователь #{comment.user_id}</span>
@@ -568,14 +651,14 @@ export default function AdminDashboard({ user }) {
                   <textarea
                     value={commentText}
                     onChange={(e) => setCommentText(e.target.value)}
-                    placeholder="Оставьте ваш комментарий..."
+                    placeholder="Оставьте ваш комментарий.."
                     rows="3"
                     className={styles.commentTextarea}/>
                   <button 
                     onClick={handleAddComment} 
                     disabled={!commentText.trim() || isSubmittingComment}
                     className={styles.commentSubmitBtn}>
-                    {isSubmittingComment ? 'Отправка...' : 'Отправить комментарий'}
+                    {isSubmittingComment ? 'Отправка..' : 'Отправить комментарий'}
                   </button>
                 </div>
               </div>

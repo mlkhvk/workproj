@@ -1,10 +1,9 @@
-# Импорт необходимых модулей FastAPI и других библиотек
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from backend.database import JSONDatabase
-from backend.auth import AuthSystem
-from backend.admin import AdminSystem
+from database import JSONDatabase
+from auth import AuthSystem
+from admin import AdminSystem
 import logging
 import sys
 import uvicorn
@@ -577,6 +576,37 @@ def get_categories_public():
 @app.get("/health")
 def health_check():
     return {"status": "ok", "message": "Server is running"}
+
+@app.get("/admin/ideas-with-authors")
+def get_ideas_with_authors():
+    """Получение всех идей с информацией об авторах (только для админа)"""
+    # Устанавливаем текущего пользователя как администратора
+    auth.current_user = {
+        "id": 1,
+        "username": "admin",
+        "role": "admin",
+        "full_name": "Администратор",
+        "has_completed_introduction": True
+    }
+    
+    # Получаем все идеи
+    ideas = db.get_all_ideas_admin()
+    
+    # Обогащаем идеи информацией об авторах
+    enriched_ideas = []
+    for idea in ideas:
+        if idea.get("author_id"):
+            author = db.get_user_by_id(idea["author_id"])
+            if author:
+                idea["author_info"] = {
+                    "id": author["id"],
+                    "username": author.get("username", ""),
+                    "full_name": author.get("full_name", ""),
+                    "role": author.get("role", "user")
+                }
+        enriched_ideas.append(idea)
+    
+    return {"success": True, "ideas": enriched_ideas}
 
 # Эндпоинт для поиска идей (только админ)
 @app.get("/admin/ideas/search")

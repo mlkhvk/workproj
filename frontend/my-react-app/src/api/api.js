@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8000";
+const API_BASE = "/api";
 
 //Функция для авторизации пользователя
 export const login = async (username, password) => {
@@ -137,6 +137,29 @@ export const getAdminIdeas = async () => {
   }
 };
 
+// НОВАЯ ФУНКЦИЯ: Получение идей с информацией об авторах
+export const getAdminIdeasWithAuthors = async () => {
+  try {
+    // Сначала пробуем новый эндпоинт
+    const response = await fetch(`${API_BASE}/admin/ideas-with-authors`);
+    
+    if (!response.ok) {
+      // Если новый эндпоинт не найден, используем старый
+      if (response.status === 404) {
+        console.log('Эндпоинт с авторами не найден, используем старый метод');
+        return await getAdminIdeas();
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Get admin ideas with authors error:', error);
+    // В случае ошибки используем старый метод
+    return await getAdminIdeas();
+  }
+};
+
 //Функция для получения конкретной идеи по ID
 export const getIdea = async (id) => {
   try {
@@ -168,39 +191,103 @@ export const createIdea = async (ideaData) => {
   }
 };
 
-//Функция для голосования за идею
+//Функция для голосования за идею (ИСПРАВЛЕННАЯ ВЕРСИЯ)
 export const voteIdea = async (ideaId, userId, vote) => {
   try {
+    // Проверяем входные данные
+    if (!ideaId || !userId || !vote) {
+      console.error('Missing parameters for vote:', { ideaId, userId, vote });
+      return { success: false, message: "Отсутствуют необходимые параметры для голосования" };
+    }
+    
+    // Преобразуем userId в число, если это строка
+    const numericUserId = Number(userId);
+    if (isNaN(numericUserId)) {
+      console.error('Invalid userId:', userId);
+      return { success: false, message: "Некорректный ID пользователя" };
+    }
+    
+    console.log('Sending vote request:', {
+      ideaId,
+      userId: numericUserId,
+      vote
+    });
+    
     //Отправляем POST запрос на эндпоинт /idea/{id}/vote
     const response = await fetch(`${API_BASE}/idea/${ideaId}/vote`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ user_id: userId, vote }),//Отправляем ID пользователя и голос
+      body: JSON.stringify({ 
+        user_id: numericUserId, 
+        vote: vote 
+      }),
     });
-    return await response.json();
+    
+    console.log('Vote response status:', response.status);
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Vote error response:', errorText);
+      
+      try {
+        const errorData = JSON.parse(errorText);
+        return { 
+          success: false, 
+          message: errorData.detail || errorData.message || "Ошибка при голосовании" 
+        };
+      } catch {
+        return { 
+          success: false, 
+          message: `Ошибка сервера: ${response.status}` 
+        };
+      }
+    }
+    
+    const result = await response.json();
+    console.log('Vote success:', result);
+    return result;
   } catch (error) {
-    console.error('Vote error:', error);
-    return { success: false, message: "Ошибка голосования" };
+    console.error('Vote API error:', error);
+    return { 
+      success: false, 
+      message: "Ошибка при голосовании. Проверьте подключение к серверу." 
+    };
   }
 };
 
 //Функция для добавления комментария к идее
 export const addComment = async (ideaId, userId, text) => {
   try {
+    // Проверяем входные данные
+    if (!ideaId || !userId || !text || !text.trim()) {
+      return { success: false, message: "Отсутствует текст комментария" };
+    }
+    
     //Отправляем POST запрос на эндпоинт /idea/{id}/comment
     const response = await fetch(`${API_BASE}/idea/${ideaId}/comment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ user_id: userId, text }),//Отправляем ID пользователя и текст комментария
+      body: JSON.stringify({ 
+        user_id: Number(userId), 
+        text: text.trim() 
+      }),
     });
-    return await response.json();
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Add comment error response:', errorText);
+      return { success: false, message: "Ошибка при добавлении комментария" };
+    }
+    
+    const result = await response.json();
+    return { success: true, comment_id: result.comment_id };
   } catch (error) {
     console.error('Add comment error:', error);
-    return { success: false };
+    return { success: false, message: "Ошибка при добавлении комментария" };
   }
 };
 
