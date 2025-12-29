@@ -388,9 +388,8 @@ export default function AdminDashboard({ user }) {
                 await unblockUser(id);
                 refreshUsers();
               }}
-              onDelete={async (id) => {
-                await refreshUsers();
-              }}
+              onRefresh={refreshUsers}
+              onDelete={refreshUsers}
             />
           </section>
         )}

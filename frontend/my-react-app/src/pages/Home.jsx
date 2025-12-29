@@ -51,10 +51,15 @@ export default function Home({ user }) {
 
   //Функция обновления списка идей
   const refresh = async () => {
-    const data = await getIdeas(filter);
-    setIdeas(data);
+    try {
+      const data = await getIdeas(filter);
+      setIdeas(data || []);
+    } catch (error) {
+      console.error('Error refreshing ideas:', error);
+      setIdeas([]);
+    }
   };
-
+  
   //Эффект для обновления идей при изменении фильтра
   useEffect(() => {
     refresh();

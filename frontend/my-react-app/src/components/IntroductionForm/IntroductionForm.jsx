@@ -12,7 +12,7 @@ export default function IntroductionForm({ user, onComplete, onCancel }) {
 
   //Обработчик отправки формы
   const handleSubmit = async (e) => {
-    e.preventDefault();//Предотвращаем стандартное поведение формы
+    e.preventDefault();
     
     //Валидация: проверяем что поле не пустое
     if (!fullName.trim()) {
@@ -45,7 +45,7 @@ export default function IntroductionForm({ user, onComplete, onCancel }) {
       
       {/*Пояснительный текст*/}
       <p className={styles.introText}>
-        Для завершения регистрации укажите ваше ФИО
+        Для завершения регистрации укажите ваше ФИО(его увидит только администратор)
       </p>
 
       {/*Отображение ошибок валидации*/}

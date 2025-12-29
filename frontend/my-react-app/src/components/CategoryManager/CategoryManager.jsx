@@ -156,6 +156,7 @@ export default function CategoryManager() {
                       type="text"
                       value={editName}
                       onChange={(e) => setEditName(e.target.value)}
+                      maxLength={40}
                       disabled={loading}/>
                     <button 
                       onClick={() => handleUpdateCategory(category)}

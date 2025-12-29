@@ -5,20 +5,19 @@ import {
   blockUser, 
   unblockUser,
   deleteUser,
-  generateUsersWithPasswords,  // НОВЫЙ API
-  hashTempPasswords            // НОВЫЙ API
+  onRefres,
+  generateUsersWithPasswords,  
+  hashTempPasswords            
 } from "../../api/api";
 import styles from './AdminPanel.module.scss';
-import PasswordModal from "../PasswordModal/PasswordModal"; // НОВЫЙ КОМПОНЕНТ
+import PasswordModal from "../PasswordModal/PasswordModal"; 
 
-export default function AdminPanel({ users, onBlock, onUnblock, onDelete }) {
+export default function AdminPanel({ users, onBlock, onUnblock, onDelete, onRefresh }) {
   const [userCount, setUserCount] = useState(10);
   const [isGenerating, setIsGenerating] = useState(false);
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  
-  // НОВЫЕ СОСТОЯНИЯ ДЛЯ МОДАЛЬНОГО ОКНА
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [generatedUsers, setGeneratedUsers] = useState([]);
   const [isHashing, setIsHashing] = useState(false);
@@ -62,20 +61,15 @@ export default function AdminPanel({ users, onBlock, onUnblock, onDelete }) {
         // Показываем модальное окно
         setShowPasswordModal(true);
       } else {
-        // Если новый метод не работает, используем старый
-        console.log("Новый метод не доступен, используем старый...");
         await handleGenerateUsersLegacy();
       }
     } catch (error) {
       console.error('Generate users with passwords error:', error);
-      // При ошибке используем старый метод
       await handleGenerateUsersLegacy();
     } finally {
       setIsGenerating(false);
     }
   };
-
-  // СТАРЫЙ МЕТОД: Для совместимости
   const handleGenerateUsersLegacy = async () => {
     try {
       const result = await generateRandomUsers(userCount);
@@ -92,20 +86,18 @@ export default function AdminPanel({ users, onBlock, onUnblock, onDelete }) {
     }
   };
 
-  // НОВЫЙ МЕТОД: Хеширование паролей после закрытия модального окна
+  //Хеширование паролей после закрытия модального окна
   const handleHashPasswords = async () => {
     setIsHashing(true);
     try {
       const result = await hashTempPasswords();
       if (result.success) {
-        // Обновляем список пользователей
         await loadUsers();
-        // Очищаем состояние
+        if (onRefresh) {
+          await onRefresh();
+        }
         setGeneratedUsers([]);
-        // Закрываем модальное окно
         setShowPasswordModal(false);
-        
-        // Показываем сообщение
         if (result.hashed_count > 0) {
           alert(`Пароли успешно сохранены и захешированы (${result.hashed_count} пользователей)`);
         }
@@ -120,7 +112,7 @@ export default function AdminPanel({ users, onBlock, onUnblock, onDelete }) {
     }
   };
 
-  // Обработчики блокировки/разблокировки/удаления (остаются без изменений)
+  // Обработчики блокировки/разблокировки/удаления 
   const handleBlockUser = async (userId) => {
     try {
       const result = await blockUser(userId);
@@ -189,58 +181,57 @@ export default function AdminPanel({ users, onBlock, onUnblock, onDelete }) {
 
   return (
     <div className={styles.panel}>
-      {/* Секция генерации тестовых пользователей */}
-      <div className={styles.userGeneration}>
-        <div className={styles.generationControls}>
-          <div className={styles.countControl}>
-            <label htmlFor="userCount">Количество пользователей:</label>
+      {/* Секция генерации пользователей */}
+      <div className={styles.topControlsRow}>
+        <div className={styles.searchSection}>
+          <h4>Поиск пользователей</h4>
+          <div className={styles.searchContainer}>
             <input
-              id="userCount"
-              type="number"
-              min="1"
-              max="100"
-              value={userCount}
-              onChange={(e) => setUserCount(parseInt(e.target.value) || 1)}
-              className={styles.countInput}/>
+              type="text"
+              placeholder="Поиск по фамилии.."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={styles.searchInput}
+            />
+            {searchTerm && (
+              <button 
+                onClick={() => setSearchTerm("")}
+                className={styles.clearSearchBtn}
+                type="button">
+                ✕
+              </button>
+            )}
           </div>
-          <button 
-            onClick={handleGenerateUsersWithPasswords}  // ИЗМЕНЕН ОБРАБОТЧИК
-            disabled={isGenerating}
-            className={styles.generateBtn}
-            type="button">
-            {isGenerating ? 'Создание..' : `Создать ${userCount} пользователей`}
-          </button>
+          <p className={styles.searchHint}>
+            {searchTerm ? `Найдено пользователей: ${displayUsers.length}` : 'Введите фамилию для поиска'}
+          </p>
         </div>
-        <p className={styles.generationHint}>
-          Будут созданы случайные пользователи. Пароли будут показаны в модальном окне перед сохранением.
-        </p>
-      </div>
-
-      {/* Остальной код без изменений */}
-      <div className={styles.searchSection}>
-        <h4>Поиск пользователей</h4>
-        <div className={styles.searchContainer}>
-          <input
-            type="text"
-            placeholder="Поиск по фамилии.."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
-          />
-          {searchTerm && (
+        <div className={styles.userGeneration}>
+          <div className={styles.generationControls}>
+            <div className={styles.countControl}>
+              <label htmlFor="userCount">Количество пользователей:</label>
+              <input
+                id="userCount"
+                type="number"
+                min="1"
+                max="100"
+                value={userCount}
+                onChange={(e) => setUserCount(parseInt(e.target.value) || 1)}
+                className={styles.countInput}/>
+            </div>
             <button 
-              onClick={() => setSearchTerm("")}
-              className={styles.clearSearchBtn}
+              onClick={handleGenerateUsersWithPasswords}  
+              disabled={isGenerating}
+              className={styles.generateBtn}
               type="button">
-              ✕
+              {isGenerating ? 'Создание..' : `Создать ${userCount} пользователей`}
             </button>
-          )}
+          </div>
+          <p className={styles.generationHint}>
+            Будут созданы случайные пользователи. Пароли будут показаны в модальном окне перед сохранением.
+          </p>
         </div>
-        <p className={styles.searchHint}>
-          {searchTerm ? `Найдено пользователей: ${displayUsers.length}` : 'Введите фамилию для поиска'}
-        </p>
       </div>
-
       <div className={styles.usersSection}>
         <h4>
           Список пользователей 
@@ -405,7 +396,6 @@ export default function AdminPanel({ users, onBlock, onUnblock, onDelete }) {
           users={generatedUsers}
           onClose={() => {
             setShowPasswordModal(false);
-            // Если модальное окно закрыто без сохранения, спрашиваем
             if (generatedUsers.length > 0 && !isHashing) {
               if (window.confirm("Пароли не сохранены. Хотите сохранить и захешировать пароли?")) {
                 handleHashPasswords();

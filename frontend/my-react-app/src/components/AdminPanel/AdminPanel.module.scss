@@ -2,6 +2,39 @@
 @use '../../styles/mixins.scss' as *;
 
 .panel {
+  .topControlsRow {
+  display: flex;
+  gap: var(--spacing-xl);
+  align-items: stretch;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: var(--spacing-lg);
+  }
+
+  @media (max-width: 480px) {
+    gap: var(--spacing-md);
+  }
+}
+
+.userGeneration {
+  flex: 1;
+
+  @media (max-width: 768px) {
+    flex: none;
+    width: 100%;
+  }
+}
+
+.searchSection {
+  flex: 2;
+
+  @media (max-width: 768px) {
+    flex: none;
+    width: 100%;
+  }
+}
+
   .userGeneration {
     @include section-warning;
     margin-bottom: var(--spacing-xl);
@@ -103,11 +136,11 @@
         @include input-base;
         padding-right: 40px;
         color: var(--text-primary);
-        font-size: 16px; 
+        font-size: 16px;
 
         @media (max-width: 480px) {
           padding: var(--spacing-sm) var(--spacing-md);
-          height: 44px; 
+          height: 44px;
         }
       }
 
@@ -165,7 +198,8 @@
       font-style: italic;
     }
 
-    .noUsers, .searchNoResults {
+    .noUsers,
+    .searchNoResults {
       text-align: center;
       padding: var(--spacing-xl);
       color: var(--text-muted);
@@ -198,35 +232,35 @@
       overflow-x: auto;
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-sm);
-      -webkit-overflow-scrolling: touch; 
+      -webkit-overflow-scrolling: touch;
     }
 
     .usersTable {
       width: 100%;
       border-collapse: collapse;
       background: var(--bg-white);
-      min-width: 600px; 
+      min-width: 600px;
 
       @media (max-width: 768px) {
-        min-width: 800px; 
+        min-width: 800px;
       }
 
       thead {
         background: var(--gradient-primary);
         color: white;
 
-        @media (max-width: 768px) {
-          th {
-            padding: var(--spacing-sm);
-            font-size: 0.9rem;
-          }
-        }
-
         th {
           padding: var(--spacing-md) var(--spacing-lg);
           text-align: left;
           font-weight: 600;
           white-space: nowrap;
+        }
+
+        @media (max-width: 768px) {
+          th {
+            padding: var(--spacing-sm);
+            font-size: 0.9rem;
+          }
         }
       }
 
@@ -433,6 +467,7 @@
     }
   }
 }
+
 @media (max-width: 768px) {
   .panel {
     padding: var(--spacing-sm);
