@@ -10,7 +10,7 @@ export default function PasswordModal({ users, onClose, onSave, isSaving }) {
         await navigator.clipboard.writeText(text);
         return true;
       } catch (err) {
-        console.log('Clipboard API не сработал, пробуем fallback');
+        
       }
     }
     
@@ -47,7 +47,6 @@ export default function PasswordModal({ users, onClose, onSave, isSaving }) {
       setTimeout(() => setCopiedAll(false), 2000);
       alert("Все логины и пароли скопированы в буфер обмена!");
     } else {
-      // Если не удалось скопировать, показываем текст для ручного копирования
       prompt("Скопируйте этот текст вручную:", text);
     }
   };
@@ -57,7 +56,7 @@ export default function PasswordModal({ users, onClose, onSave, isSaving }) {
     const success = await copyToClipboard(text);
     
     if (success) {
-      alert("Скопировано в буфер обмена!");
+      alert("Скопировано в буфер обмена");
     } else {
       prompt("Скопируйте этот текст вручную:", text);
     }
@@ -83,13 +82,10 @@ export default function PasswordModal({ users, onClose, onSave, isSaving }) {
   };
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div className={styles.modalOverlay}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h2>Созданные пользователи</h2>
-          <button className={styles.closeBtn} onClick={onClose} disabled={isSaving}>
-            ✕
-          </button>
         </div>
         
         <div className={styles.modalContent}>
@@ -134,7 +130,7 @@ export default function PasswordModal({ users, onClose, onSave, isSaving }) {
               className={styles.copyAllBtn}
               onClick={handleCopyAll}
               disabled={isSaving}>
-              {copiedAll ? "Скопировано ✓" : "Копировать все"}
+              {copiedAll ? "Скопировано" : "Копировать все"}
             </button>
             
             <button 
